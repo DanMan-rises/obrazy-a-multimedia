@@ -234,7 +234,7 @@ else:
     print("Bez kalibrace: plochy jsou v pixelech")
 
 print(f"\n{'#':>3} {'plocha [' + jednotka + ']':>14} {'průměr [' + jednotka_d + ']':>12}")
-for i, (pl, pr) in enumerate(zip(plochy, prumery), start=1):
+for i, (pl, pr) in enumerate(zip(plochy, prumery, strict=True), start=1):
     print(f"{i:>3} {pl:>14.1f} {pr:>12.2f}")
 print(f"\nPočet: {len(plochy)}   průměrná plocha: {plochy.mean():.1f} {jednotka}"
       f"   celkem: {plochy.sum():.1f} {jednotka}")
@@ -251,7 +251,7 @@ if a.kontrola:
         chyby = (prumery - skutecne) / skutecne * 100
         print(f"\nOvěření přesnosti (průměry v {jednotka_d}):")
         print(f"{'#':>3} {'skutečný':>9} {'změřený':>9} {'chyba':>8}")
-        for i, (sk, zm, ch) in enumerate(zip(skutecne, prumery, chyby), start=1):
+        for i, (sk, zm, ch) in enumerate(zip(skutecne, prumery, chyby, strict=True), start=1):
             znacka = "   <- kalibrace" if i == a.ref else ""
             print(f"{i:>3} {sk:>9.2f} {zm:>9.2f} {ch:>+7.1f} %{znacka}")
         print(f"Průměrná absolutní chyba: {np.abs(chyby).mean():.1f} %"

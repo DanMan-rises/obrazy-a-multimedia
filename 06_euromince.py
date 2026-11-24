@@ -55,7 +55,7 @@ prostredi = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
 vysledek = subprocess.run([sys.executable, "02_pocitani_objektu.py", FOTKA, "--tmave-objekty",
                            "--vyhlazeni", "--rozdelit", "--bez-okna"],
                           env=prostredi, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
-                          text=True, encoding="utf-8", errors="replace")
+                          text=True, encoding="utf-8", errors="replace", check=False)
 if vysledek.returncode != 0:
     sys.exit("Skript 02 skončil chybou:\n" + vysledek.stderr)
 with open("vystupy/02_plochy.csv", encoding="utf-8") as f:
@@ -107,7 +107,7 @@ ax1.imshow(fotka)
 for i in range(len(ECB)):
     ax1.text(x[i], y[i], str(i + 1), ha="center", va="center", fontsize=15,
              fontweight="bold", color="white",
-             bbox=dict(boxstyle="circle", fc=ORANZOVA if i == r else "#16202B", ec="none"))
+             bbox={"boxstyle": "circle", "fc": ORANZOVA if i == r else "#16202B", "ec": "none"})
 ax1.set_title(f"Mince 1–8, oranžově kalibrační ({NAZVY[r]})")
 ax1.axis("off")
 

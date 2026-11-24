@@ -26,6 +26,12 @@ from scipy import ndimage as ndi
 from scipy import signal
 from scipy.io import wavfile
 
+# přehrávání zvuku na Windows (modul winsound existuje jen tam)
+if sys.platform.startswith("win"):
+    import winsound
+else:
+    winsound = None
+
 # Windows při přesměrovaném výstupu nepíše UTF-8; ať háčky skript neshodí
 if sys.stdout.encoding and sys.stdout.encoding.lower().replace("-", "") != "utf8":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -115,8 +121,7 @@ print("\nUloženo: vystupy/03_zvuk.png")
 
 def prehrat(cesta):
     """Spustí přehrávání WAV souboru na pozadí, aby se mezitím ukázaly grafy."""
-    if sys.platform.startswith("win"):
-        import winsound
+    if winsound is not None:
         winsound.PlaySound(cesta, winsound.SND_FILENAME | winsound.SND_ASYNC)
         return True
     for prikaz in (["afplay"], ["aplay", "-q"], ["paplay"]):   # macOS, Linux
