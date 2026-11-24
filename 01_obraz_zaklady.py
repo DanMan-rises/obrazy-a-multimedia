@@ -14,6 +14,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
+# Windows při přesměrovaném výstupu nepíše UTF-8; ať háčky skript neshodí
+if sys.stdout.encoding and sys.stdout.encoding.lower().replace("-", "") != "utf8":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 os.makedirs("vystupy", exist_ok=True)   # složka pro výsledky
 
 cesta = sys.argv[1] if len(sys.argv) > 1 else "data/recke_mince.png"

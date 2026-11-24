@@ -29,6 +29,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
+# Windows při přesměrovaném výstupu nepíše UTF-8; ať háčky skript neshodí
+if sys.stdout.encoding and sys.stdout.encoding.lower().replace("-", "") != "utf8":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 FOTKA = "data/euro_mince.jpg"
 NAZVY = ["1 c", "2 c", "5 c", "10 c", "20 c", "50 c", "1 €", "2 €"]
 ECB = np.array([16.25, 18.75, 21.25, 19.75, 22.25, 24.25, 23.25, 25.75])  # průměry v mm
@@ -40,14 +44,20 @@ p.add_argument("--ref", type=int, default=6, choices=range(1, 9),
 p.add_argument("--bez-okna", action="store_true",
                help="jen uložit obrázek, neotvírat okno")
 a = p.parse_args()
+os.chdir(os.path.dirname(os.path.abspath(__file__)))   # cesty data/ a vystupy/ ke skriptu
 os.makedirs("vystupy", exist_ok=True)
 r = a.ref - 1
 
 # ---------------------------------------------------------------- 1) mince najde skript 02
 print("Hledám mince skriptem 02 ...")
-subprocess.run([sys.executable, "02_pocitani_objektu.py", FOTKA, "--tmave-objekty",
-                "--vyhlazeni", "--rozdelit", "--bez-okna"],
-               check=True, stdout=subprocess.DEVNULL)
+# Windows při přesměrovaném výstupu nepíše UTF-8 a háčky by skript 02 shodily
+prostredi = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
+vysledek = subprocess.run([sys.executable, "02_pocitani_objektu.py", FOTKA, "--tmave-objekty",
+                           "--vyhlazeni", "--rozdelit", "--bez-okna"],
+                          env=prostredi, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+                          text=True, encoding="utf-8", errors="replace")
+if vysledek.returncode != 0:
+    sys.exit("Skript 02 skončil chybou:\n" + vysledek.stderr)
 with open("vystupy/02_plochy.csv", encoding="utf-8") as f:
     radky = list(csv.DictReader(f))
 if len(radky) != len(ECB):

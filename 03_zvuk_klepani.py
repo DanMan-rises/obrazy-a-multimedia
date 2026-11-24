@@ -26,6 +26,10 @@ from scipy import ndimage as ndi
 from scipy import signal
 from scipy.io import wavfile
 
+# Windows při přesměrovaném výstupu nepíše UTF-8; ať háčky skript neshodí
+if sys.stdout.encoding and sys.stdout.encoding.lower().replace("-", "") != "utf8":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 os.makedirs("vystupy", exist_ok=True)   # složka pro výsledky
 
 p = argparse.ArgumentParser()

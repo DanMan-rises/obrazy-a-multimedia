@@ -28,6 +28,7 @@ Bez kalibrace vyjdou plochy jen v pixelech.
 (euromince, slepené mince). U malé fotky řeckých mincí drobnosti uklidí čištění.
 """
 import argparse
+import sys
 import csv
 import os
 
@@ -35,6 +36,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 from scipy import ndimage as ndi
+
+# Windows při přesměrovaném výstupu nepíše UTF-8; ať háčky skript neshodí
+if sys.stdout.encoding and sys.stdout.encoding.lower().replace("-", "") != "utf8":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 os.makedirs("vystupy", exist_ok=True)   # složka pro výsledky
 

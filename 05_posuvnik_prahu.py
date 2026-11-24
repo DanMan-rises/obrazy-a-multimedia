@@ -16,6 +16,7 @@ Spuštění:
     python 05_posuvnik_prahu.py data/euro_mince.jpg --tmave-objekty --vyhlazeni
 """
 import argparse
+import sys
 import os
 
 import matplotlib.pyplot as plt
@@ -23,6 +24,10 @@ import numpy as np
 from matplotlib.widgets import Slider
 from PIL import Image
 from scipy import ndimage as ndi
+
+# Windows při přesměrovaném výstupu nepíše UTF-8; ať háčky skript neshodí
+if sys.stdout.encoding and sys.stdout.encoding.lower().replace("-", "") != "utf8":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 os.makedirs("vystupy", exist_ok=True)   # složka pro výsledky
 
