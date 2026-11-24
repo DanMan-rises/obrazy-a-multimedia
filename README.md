@@ -27,6 +27,7 @@ obrazy-a-multimedia/
   03_zvuk_klepani.py       stejný princip na zvuku
   04_video_pohyb.py        stejný princip na videu
   05_posuvnik_prahu.py     práh naživo: posuvník, maska a počet oblastí
+  06_euromince.py          euromince: přesnost, kalibrace jednou mincí a podle polohy
   fiji_makro.ijm           referenční makro pro Fiji (euromince)
   data/                    obrázky, zvuk a snímky videa (viz Zdroje níže)
   vystupy/                 sem se ukládají obrázky a CSV
@@ -55,11 +56,18 @@ python 01_obraz_zaklady.py
 python 02_pocitani_objektu.py
 python 05_posuvnik_prahu.py
 python 05_posuvnik_prahu.py --bez-upravy
-python 02_pocitani_objektu.py data/euro_mince.jpg --tmave-objekty --vyhlazeni --rozdelit --ref 6 --ref-mm 24.25 --kontrola 16.25,18.75,21.25,19.75,22.25,24.25,23.25,25.75
+python 06_euromince.py
+python 06_euromince.py --ref 8
 python 02_pocitani_objektu.py data/slepene_mince.jpg --tmave-objekty --vyhlazeni --rozdelit --bez-zaplneni --min-plocha 800
 python 03_zvuk_klepani.py
 python 04_video_pohyb.py
 ```
+
+Skript 06 najde euromince skriptem 02 a pak je kalibruje dvakrát: jednou mincí
+(výchozí 50 c, s `--ref 8` na 2 €) a podle polohy, protože fotka není focená kolmo.
+Vypíše chybu každé mince a uloží graf `vystupy/06_euromince.png`. Totéž bez
+kalibrace podle polohy dá i samotný skript 02:
+`python 02_pocitani_objektu.py data/euro_mince.jpg --tmave-objekty --vyhlazeni --rozdelit --ref 6 --ref-mm 24.25 --kontrola 16.25,18.75,21.25,19.75,22.25,24.25,23.25,25.75`
 
 Skripty 03 a 04 bez argumentu použijí `data/klepani.wav` a `data/chodci/`.
 U jiné nahrávky můžeš upravit práh: `python 03_zvuk_klepani.py data/vlastni_nahravka.wav --prah 0.3`
@@ -87,6 +95,20 @@ doprava. Na fotce euromincí tedy 1 = 1 cent, 6 = 50 centů, 8 = 2 eura.
 Kalibruje se na 50 c uprostřed: fotka není focená kolmo, takže mince na krajích
 mají jiné měřítko. S kalibrací na 2 € v rohu (`--ref 8 --ref-mm 25.75`) vyjde
 chyba až 16 %, s kalibrací na 50 c asi 8 %.
+
+## Na jaké obrázky skript 02 funguje
+
+Dobře funguje, když se objekty od pozadí liší jasem (světlé na tmavém, nebo tmavé
+na světlém s `--tmave-objekty`), jsou zhruba stejně velké a moc se nepřekrývají.
+Nerovnoměrné osvětlení srovná sám, šum a reliéf uklidí čištění nebo `--vyhlazeni`,
+dotýkající se kulaté objekty rozdělí `--rozdelit`.
+
+Nefunguje, když se objekt od pozadí liší jen barvou a ne jasem (skript pracuje
+ve stupních šedi), když je pozadí členité nebo stejně světlé jako objekty, když se
+objekty hodně překrývají, nebo když jsou to tenké a protáhlé tvary (rozdělení
+předpokládá zhruba kulaté objekty). Na milimetry převádí jen při kalibraci
+a správně jen u fotky focené kolmo. U jiné fotky je skoro vždy potřeba vyzkoušet
+přepínače a podívat se na masku v okně.
 
 ## Oficiální průměry euromincí (ECB)
 
